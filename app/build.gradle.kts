@@ -6,6 +6,7 @@ plugins {
     id ("kotlin-kapt")
     id ("com.google.dagger.hilt.android")
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -66,5 +67,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     androidTestImplementation(libs.androidx.junit)
+    implementation ("com.google.android.material:material:1.4.0")
+
     androidTestImplementation(libs.androidx.espresso.core)
 }
