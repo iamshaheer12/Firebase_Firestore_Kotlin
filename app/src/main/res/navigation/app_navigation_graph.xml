@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation_graph"
-    app:startDestination="@id/noteListingFragment">
+    app:startDestination="@id/signUpPage">
 
     <fragment
         android:id="@+id/noteDetailsFragment"
@@ -18,5 +18,30 @@
         <action
             android:id="@+id/action_noteListingFragment_to_noteDetailsFragment"
             app:destination="@id/noteDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpPage"
+        android:name="com.example.firebase_implementation.View.View.SignUpPage"
+        android:label="SignUpPage"
+        tools:layout="@layout/fragment_sign_up_page"
+        >
+        <action
+            android:id="@+id/action_signUpPage_to_loginPage"
+            app:destination="@id/loginPage" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginPage"
+        android:name="com.example.firebase_implementation.View.View.LoginPage"
+        android:label="fragment_login_page"
+        tools:layout="@layout/fragment_login_page" >
+
+
+
+        <action
+            android:id="@+id/action_loginPage_to_noteListingFragment"
+            app:destination="@id/noteListingFragment" />
+        <action
+            android:id="@+id/action_loginPage_to_signUpPage2"
+            app:destination="@id/signUpPage" />
     </fragment>
 </navigation>

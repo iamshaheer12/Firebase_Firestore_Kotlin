@@ -1,6 +1,7 @@
 package com.example.firebase_implementation.View.Repository.Di
 
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -16,5 +17,10 @@ object FirebaseModule {
     @Singleton
     fun providerFireStoreInstance():FirebaseFirestore{
         return FirebaseFirestore.getInstance()
+    }
+    @Provides
+    @Singleton
+    fun providerFirebaseAuthInstance():FirebaseAuth{
+        return FirebaseAuth.getInstance()
     }
 }
