@@ -1,8 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.FireBase_Implementation" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorAccent">@color/create</item>
+<!--        <item name="colorPrimaryLight">@color/primary_light</item>-->
+<!--        <item name="colorAccentColor">@color/accent_color</item>-->
+        <!-- Add more theme attributes as needed -->
     </style>
 
     <style name="Theme.FireBase_Implementation" parent="Base.Theme.FireBase_Implementation" />

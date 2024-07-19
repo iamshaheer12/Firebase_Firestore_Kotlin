@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation_graph"
-    app:startDestination="@id/signUpPage">
+    app:startDestination="@id/loginPage">
 
     <fragment
         android:id="@+id/noteDetailsFragment"
@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_noteListingFragment_to_noteDetailsFragment"
             app:destination="@id/noteDetailsFragment" />
+        <action
+            android:id="@+id/action_noteListingFragment_to_profilePage"
+            app:destination="@id/profilePage" />
     </fragment>
     <fragment
         android:id="@+id/signUpPage"
@@ -28,6 +31,9 @@
         <action
             android:id="@+id/action_signUpPage_to_loginPage"
             app:destination="@id/loginPage" />
+        <action
+            android:id="@+id/action_signUpPage_to_noteListingFragment"
+            app:destination="@id/noteListingFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginPage"
@@ -43,5 +49,22 @@
         <action
             android:id="@+id/action_loginPage_to_signUpPage2"
             app:destination="@id/signUpPage" />
+        <action
+            android:id="@+id/action_loginPage_to_forgotPassword"
+            app:destination="@id/forgotPassword" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgotPassword"
+        android:name="com.example.firebase_implementation.View.View.ForgotPassword"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" />
+    <fragment
+        android:id="@+id/profilePage"
+        android:name="com.example.firebase_implementation.View.View.ProfilePage"
+        android:label="fragment_profile_page"
+        tools:layout="@layout/fragment_profile_page" >
+        <action
+            android:id="@+id/action_profilePage_to_loginPage"
+            app:destination="@id/loginPage" />
     </fragment>
 </navigation>

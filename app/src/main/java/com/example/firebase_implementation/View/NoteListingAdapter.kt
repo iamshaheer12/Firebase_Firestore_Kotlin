@@ -1,11 +1,13 @@
 package com.example.firebase_implementation.View
 
-import android.renderscript.ScriptGroup.Binding
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firebase_implementation.View.Model.Note
 import com.example.firebase_implementation.databinding.ItemNoteLayoutBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class NoteListingAdapter(
     val onItemClicked:(Int, Note) ->Unit,
@@ -15,14 +17,16 @@ class NoteListingAdapter(
     private  var list: MutableList<Note> = arrayListOf()
     inner class MyViewholder(val binding: ItemNoteLayoutBinding):RecyclerView.ViewHolder(binding.root){
         fun bind(item :Note){
-            binding.noteIdValue.setText(item.id)
-            binding.messageLabelValue.setText(item.text)
+            binding.noteTitle.setText(item.title)
+            binding.dateTime.setText(formatTime(item.date))
+
+            binding.messageLabelValue.setText(item.message)
             binding.edit.setOnClickListener{
                 onEditClicked.invoke(adapterPosition,item)
             }
-            binding.delete.setOnClickListener{onEditClicked.invoke(adapterPosition,item)}
+            binding.delete.setOnClickListener{onDeleteClicked.invoke(adapterPosition,item)}
             binding.itemLayout.setOnClickListener{
-                onEditClicked.invoke(adapterPosition,item)
+                onItemClicked.invoke(adapterPosition,item)
             }
 
         }
@@ -53,6 +57,12 @@ class NoteListingAdapter(
         notifyItemChanged(position)
     }
 
+
+
+    fun formatTime(date: Date, pattern: String = "dd MMM yyyy, hh:mm a"): String {
+        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+        return formatter.format(date)
+    }
 
 
 

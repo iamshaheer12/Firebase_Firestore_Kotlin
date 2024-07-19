@@ -7,43 +7,125 @@
     android:layout_height="match_parent"
     tools:context=".View.View.NoteListingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <Button
-        android:id="@+id/create"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:text="Create"
-        android:backgroundTint="@color/picture5"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_marginTop="16dp"
+        android:id="@+id/listing_app_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="-3dp" />
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:padding="4dp"
+
+                android:background="@drawable/search_background"
+                android:backgroundTint="@color/white"
+
+                android:gravity="left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/avatar_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryHint="Search.." />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar_image"
+                android:layout_width="40dp"
+                 android:layout_marginEnd="10dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/black"
+                android:clickable="true"
+                android:src="@drawable/name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <!--        <include-->
+<!--            android:id="@+id/custom_search_bar"-->
+<!--            layout="@layout/custom_search_bar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"/>-->
+<!--        <com.google.android.material.search.SearchBar-->
+<!--            android:id="@+id/search_bar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:forceDefaultNavigationOnClickListener="false"-->
+<!--            android:hint="Search" />-->
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            app:title="@null"-->
+
+<!--            android:layout_width="match_parent"-->
+
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/toolbar"-->
+<!--            app:menu="@menu/menu"-->
+
+<!--            android:background="@color/black"-->
+<!--            android:minHeight="?attr/actionBarSize"-->
+<!--       >-->
+
+
+<!--        </androidx.appcompat.widget.Toolbar>-->
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="add Note"
+        android:textAlignment="center"
+        android:padding="8dp"
+        android:src="@drawable/baseline_add_24"
+        android:elevation="10dp"
+        android:backgroundTint="@color/white"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_note"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
+
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create" />
+        app:layout_constraintTop_toBottomOf="@id/listing_app_bar" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:indeterminateTint="@color/picture5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:indeterminateTint="@color/picture5"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
