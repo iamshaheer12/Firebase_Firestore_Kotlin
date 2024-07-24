@@ -1,26 +1,47 @@
 package com.example.firebase_implementation.View
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.firebase_implementation.View.Local_Data.NoteEntity
 import com.example.firebase_implementation.View.Model.Note
+import com.example.firebase_implementation.View.Utils.TypeConverter
 import com.example.firebase_implementation.databinding.ItemNoteLayoutBinding
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 class NoteListingAdapter(
-    val onItemClicked:(Int, Note) ->Unit,
-    val onEditClicked:(Int, Note) ->Unit,
-    val onDeleteClicked:(Int, Note) ->Unit
-):RecyclerView.Adapter<NoteListingAdapter.MyViewholder>() {
-    private  var list: MutableList<Note> = arrayListOf()
-    inner class MyViewholder(val binding: ItemNoteLayoutBinding):RecyclerView.ViewHolder(binding.root){
-        fun bind(item :Note){
-            binding.noteTitle.setText(item.title)
-            binding.dateTime.setText(formatTime(item.date))
+    val onItemClicked:(Int, Any) ->Unit,
+    val onEditClicked:(Int, Any) ->Unit,
+    val onDeleteClicked:(Int, Any) ->Unit
+):RecyclerView.Adapter<NoteListingAdapter.MyViewHolder>() {
+    private  var list: MutableList<Any> = arrayListOf()
+    inner class MyViewHolder(private val binding: ItemNoteLayoutBinding):RecyclerView.ViewHolder(binding.root){
+        @SuppressLint("SetTextI18n")
+        fun bind(item: Any){
+            when (item) {
+                is Note -> {
+                    // Handle Note
+                    binding.noteTitle.text = item.title
+                    binding.dateTime.text = TypeConverter.formatDate(item.date)
 
-            binding.messageLabelValue.setText(item.message)
+                       // formatTime(item.date)
+                    binding.messageLabelValue.text = item.message
+                }
+                is NoteEntity -> {
+                    // Handle NoteEntity
+                    binding.noteTitle.text = item.title
+                    binding.dateTime.text = TypeConverter.formatDate(Date(item.date))
+                    binding.messageLabelValue.text = item.message
+                }
+                else -> {
+                    // Handle unknown types if necessary
+                    binding.noteTitle.text = "Unknown"
+                    binding.dateTime.text = "Unknown"
+                    binding.messageLabelValue.text = "Unknown"
+                }
+            }
+
             binding.edit.setOnClickListener{
                 onEditClicked.invoke(adapterPosition,item)
             }
@@ -32,10 +53,10 @@ class NoteListingAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewholder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
         val itemView =ItemNoteLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-    return MyViewholder(itemView)
+    return MyViewHolder(itemView)
 
     }
 
@@ -43,11 +64,12 @@ class NoteListingAdapter(
         return list.size
     }
 
-    override fun onBindViewHolder(holder: MyViewholder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = list[position]
         holder.bind(item)
     }
-    fun updateList(note: MutableList<Note>){
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateList(note: MutableList<Any>){
         this.list = note
         notifyDataSetChanged()
 
@@ -59,10 +81,7 @@ class NoteListingAdapter(
 
 
 
-    fun formatTime(date: Date, pattern: String = "dd MMM yyyy, hh:mm a"): String {
-        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
-        return formatter.format(date)
-    }
+
 
 
 

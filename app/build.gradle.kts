@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.model.Kapt
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
-    id ("kotlin-kapt")
-    id ("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
 }
@@ -25,32 +25,49 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
-    compileOptions {
 
+    compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     buildFeatures {
-         viewBinding  = true
+        viewBinding = true
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
 }
+
 kapt {
-    correctErrorTypes  = true
+    correctErrorTypes = true
 }
 
-
 dependencies {
+    // Other dependencies
 
+    // Room dependencies
+    implementation("androidx.room:room-runtime:2.5.0") // Replace with your Room version
+    kapt("androidx.room:room-compiler:2.5.0") // Replace with your Room version
+    implementation("androidx.room:room-ktx:2.5.0") // Optional: For Kotlin extensions
+
+    // Glide dependencies
+    implementation("com.github.bumptech.glide:glide:4.11.0")
+    kapt("com.github.bumptech.glide:compiler:4.11.0")
+
+    // Hilt dependencies
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    // Other dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -60,31 +77,21 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.storage.ktx)
-    testImplementation(libs.junit)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.gson)
+    implementation(libs.circleimageview)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.runtime)
+    implementation(libs.material.v140)
+    implementation ("androidx.work:work-runtime-ktx:2.8.0")
+
+    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    implementation (libs.material.v140)
-    implementation ("androidx.room:room-runtime:2.2.5")
-    kapt("androidx.room:room-compiler:2.2.5")
-
-    // Kotlin Extensions and Coroutines support for Room
-    implementation ("androidx.room:room-ktx:2.2.5")
-    implementation ("com.google.firebase:firebase-auth:23.0.0")
-    implementation ("com.google.firebase:firebase-bom:33.1.1")
-    implementation ("com.google.android.gms:play-services-auth:19.2.0")
-    implementation("com.google.code.gson:gson:2.8.9")
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
-    implementation ("com.github.bumptech.glide:glide:4.11.0")
-
-    annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
-    implementation ("androidx.compose.runtime:runtime:1.0.0")
-    // Coroutines
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     androidTestImplementation(libs.androidx.espresso.core)
 }

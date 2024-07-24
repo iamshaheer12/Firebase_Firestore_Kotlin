@@ -47,7 +47,6 @@ class AuthViewModel @Inject constructor(
         password: String,
         user: User
     ){
-
         _create.value = Loading
         repository.CreateUser(email,password,user) {
             _create.value = it

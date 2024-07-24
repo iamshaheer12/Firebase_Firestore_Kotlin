@@ -1,4 +1,4 @@
-package com.example.firebase_implementation.View.Repository.Di
+package com.example.firebase_implementation.View.Di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

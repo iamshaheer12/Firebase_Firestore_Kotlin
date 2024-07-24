@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -70,26 +71,27 @@ class ProfilePage : Fragment() {
         setContent()
         setOnClickListener()
         observeViewModel()
+        setAnimations()
     }
 
     private fun observeViewModel() {
-        viewModel.updateState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiStates.Failure -> {
-                    binding.prProgressBar.hide()
-                    toast(state.error.toString())
-                    Log.e("ProfilePage", "Error updating profile: ${state.error}")
-                }
-                is UiStates.Loading -> {
-                    binding.prProgressBar.show()
-                }
-                is UiStates.Success -> {
-                    toast("Successfully Uploaded User data to Firestore ")
-
-                    binding.prProgressBar.hide()
-                }
-            }
-        }
+//        viewModel.updateState.observe(viewLifecycleOwner) { state ->
+//            when (state) {
+//                is UiStates.Failure -> {
+//                    binding.prProgressBar.hide()
+//                    toast(state.error.toString())
+//                    Log.e("ProfilePage", "Error updating profile: ${state.error}")
+//                }
+//                is UiStates.Loading -> {
+//                    binding.prProgressBar.show()
+//                }
+//                is UiStates.Success -> {
+//                    toast("Successfully Uploaded User data to Firestore ")
+//
+//                    binding.prProgressBar.hide()
+//                }
+//            }
+//        }
         viewModel.uploadState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStates.Failure -> {
@@ -101,7 +103,7 @@ class ProfilePage : Fragment() {
                     binding.prProgressBar.show()
                 }
                 is UiStates.Success -> {
-                    toast(state.data.toString())
+                  //  toast(state.data.toString())
                     toast("Successfully Uploaded the image ")
                     getUser { user ->
                     user.let {
@@ -161,6 +163,26 @@ class ProfilePage : Fragment() {
         viewModel.uploadImage(uri){
         }
         }
+
+    private fun setAnimations(){
+        val topToBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.top_to_bottom)
+        val setToBack = AnimationUtils.loadAnimation(requireContext(), R.anim.set_to_back)
+        val bottomToTop = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_to_top)
+        val leftToRight = AnimationUtils.loadAnimation(requireContext(), R.anim.left_to_right)
+        val rightToLeft = AnimationUtils.loadAnimation(requireContext(), R.anim.right_to_left)
+        val combineAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.combine_animation_shake)
+
+
+
+
+
+        binding.profileCard.startAnimation(topToBottom)
+        binding.line1Card.startAnimation(leftToRight)
+        binding.line2Card.startAnimation(rightToLeft)
+//        binding.line3Card.startAnimation(bottomToTop)
+        binding.prLogout.startAnimation(combineAnimation)
+        binding.circleImageView.startAnimation(setToBack)
+    }
 
 
 }

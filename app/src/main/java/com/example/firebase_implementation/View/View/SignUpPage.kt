@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.firebase_implementation.R
 import com.example.firebase_implementation.View.Model.User
 import com.example.firebase_implementation.View.Utils.UiStates
@@ -47,10 +48,12 @@ class SignUpPage() : Fragment() {
         createUser()
 
         binding.suSignIn.setOnClickListener {
-            val navHostFragment =
-                requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.action_signUpPage_to_loginPage)
+            findNavController().popBackStack()
+          //  findNavController().navigate(R.id.action_loginPage_to_noteListingFragment)
+//            val navHostFragment =
+//                requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
+//            val navController = navHostFragment.navController
+//            navController.navigate(R.id.action_signUpPage_to_loginPage)
 
         }
         binding.suBtn.setOnClickListener {
@@ -137,7 +140,7 @@ class SignUpPage() : Fragment() {
                         requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
                     val navController = navHostFragment.navController
                     navController.navigate(
-                        R.id.action_signUpPage_to_loginPage
+                        R.id.action_signUpPage_to_noteListingFragment
 //                        ,Bundle().apply {
 //                        putString("type","create")
 //                    }
