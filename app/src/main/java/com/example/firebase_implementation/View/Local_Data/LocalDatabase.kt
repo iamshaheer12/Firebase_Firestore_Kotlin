@@ -1,16 +1,29 @@
 package com.example.firebase_implementation.View.Local_Data
 
+
+import MIGRATION_1_2
+import MIGRATION_2_3
+
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.firebase_implementation.View.Model.DeletedNote
+import com.example.firebase_implementation.View.Model.Note
 import com.example.firebase_implementation.View.Utils.TypeConverter
-
-@Database(entities = [NoteEntity::class], version = 1)
-//@TypeConverters(TypeConverter::class)
-abstract class LocalDatabase:RoomDatabase() {
+@Database(
+    entities = [Note::class, DeletedNote::class],
+    version = 3,
+    exportSchema = true
+)
+abstract class LocalDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
+    abstract fun deletedNoteDao(): DeletedNoteDao
+
     companion object {
         @Volatile
         private var INSTANCE: LocalDatabase? = null
@@ -21,11 +34,13 @@ abstract class LocalDatabase:RoomDatabase() {
                     context.applicationContext,
                     LocalDatabase::class.java,
                     "app_database"
-                ).build()
+                )
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .build()
                 INSTANCE = instance
                 instance
             }
         }
     }
-
 }
+

@@ -1,5 +1,8 @@
 package com.example.firebase_implementation.View.Local_Data
 
+
+import MIGRATION_1_2
+import MIGRATION_2_3
 import android.content.Context
 import androidx.room.Room
 import androidx.room.Room.databaseBuilder
@@ -32,11 +35,19 @@ object DatabaseModule {
                     // Your custom logic here
                 }
             })
+            .addMigrations(MIGRATION_1_2,MIGRATION_2_3)
             .build()
     }
 
     @Provides
+    @Singleton
     fun provideNoteDao(database: LocalDatabase): NoteDao {
         return database.noteDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteNoteDao(database: LocalDatabase): DeletedNoteDao {
+        return database.deletedNoteDao()
     }
 }

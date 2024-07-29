@@ -4,11 +4,11 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-07-12T11:44:15.156487Z">
+        <DropdownSelection timestamp="2024-07-26T18:26:01.700687Z">
           <Target type="DEFAULT_BOOT">
-            <template>
-              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=shiba/34" />
-            </template>
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/dev/.android/avd/Medium_Phone_API_34.avd" />
+            </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />

@@ -14,6 +14,21 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+//                arguments
+                //argument("room.generateKotlin", "true")
+                argument("room.schemaLocation", "$projectDir/schemas")
+               // arguments = ["room.schemaLocation": "$projectDir/schemas"]
+               // arguments += ["room.schemaLocation" "$/schemas".toString()]
+            //    arguments = [ "room.schemaLocation": "$projectDir/schemas" ]
+            }
+        }
+//        javaCompileOptions {
+////            annotationProcessorOptions {
+////                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+////            }
+//        }
         applicationId = "com.example.firebase_implementation"
         minSdk = 23
         targetSdk = 34
@@ -66,6 +81,7 @@ dependencies {
     // Hilt dependencies
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    kapt ("androidx.room:room-compiler:2.5.0")
 
     // Other dependencies
     implementation(libs.androidx.core.ktx)
@@ -89,6 +105,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.runtime)
     implementation(libs.material.v140)
+    androidTestImplementation ("androidx.room:room-testing:2.6.1")
     implementation ("androidx.work:work-runtime-ktx:2.8.0")
 
     testImplementation(libs.junit)

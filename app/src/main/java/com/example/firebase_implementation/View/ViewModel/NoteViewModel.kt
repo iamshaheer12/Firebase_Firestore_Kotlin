@@ -7,11 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.firebase_implementation.View.Local_Data.NoteEntity
+import com.example.firebase_implementation.View.Model.DeletedNote
 import com.example.firebase_implementation.View.Model.Note
 import com.example.firebase_implementation.View.Repository.noteRepository
 import com.example.firebase_implementation.View.Model.User
-import com.example.firebase_implementation.View.Repository.RoomNoteRepository
 import com.example.firebase_implementation.View.Utils.NetworkUtil
 import com.example.firebase_implementation.View.Utils.UiStates
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,13 +22,17 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteViewModel @Inject constructor(
     private val repository: noteRepository,
-   // private val noteDao: NoteDao,
-    private val localRepository: RoomNoteRepository
-   // private val connectivityManager: ConnectivityManager // Inject ConnectivityManager
+    // private val noteDao: NoteDao,
+//private val repository: RoomNoteRepository
+    // private val connectivityManager: ConnectivityManager // Inject ConnectivityManager
 ) : ViewModel() {
 
 
     var recyclerViewState: Parcelable? = null
+
+//
+    private val _overrideNotesState = MutableLiveData<UiStates<String>>()
+    val overrideNotesState: LiveData<UiStates<String>> get() = _overrideNotesState
 
     // Firebase Data Variables
     private val _notes = MutableLiveData<UiStates<List<Note>>>()
@@ -46,13 +49,13 @@ class NoteViewModel @Inject constructor(
 
 
     //Room Data Variables
-    private val _localNotes = MutableStateFlow<UiStates<List<NoteEntity>>>(UiStates.Loading)
-    val localNotes: LiveData<UiStates<List<NoteEntity>>> get() = _localNotes.asLiveData()
+    private val _localNotes = MutableStateFlow<UiStates<List<Note>>>(UiStates.Loading)
+    val localNotes: LiveData<UiStates<List<Note>>> get() = _localNotes.asLiveData()
 
-//    private val _localNotes = MutableLiveData<UiStates<List<NoteEntity>>>()
-//    val localNotes: LiveData<UiStates<List<NoteEntity>>> get() = _localNotes
-//    private val _localNotes = MutableStateFlow<UiStates<List<NoteEntity>>>(UiStates.Loading)
-//    val localNotes: StateFlow<UiStates<List<NoteEntity>>> get() = _localNotes
+//    private val _localNotes = MutableLiveData<UiStates<List<Note>>>()
+//    val localNotes: LiveData<UiStates<List<Note>>> get() = _localNotes
+//    private val _localNotes = MutableStateFlow<UiStates<List<Note>>>(UiStates.Loading)
+//    val localNotes: StateFlow<UiStates<List<Note>>> get() = _localNotes
 
     private val _updateLocalNote = MutableLiveData<UiStates<String>>()
     val updateLocalNote: LiveData<UiStates<String>> get() = _updateLocalNote
@@ -60,11 +63,50 @@ class NoteViewModel @Inject constructor(
     private val _addLocalNote = MutableLiveData<UiStates<String>>()
     val addLocalNote: LiveData<UiStates<String>> get() = _addLocalNote
 
-    private val _deleteLocalNote = MutableLiveData<UiStates<String>>()
-    val deleteLocalNote: LiveData<UiStates<String>> get() = _deleteLocalNote
+    private val _deleteLocalNote = MutableLiveData<UiStates<Note>>()
+    val deleteLocalNote: LiveData<UiStates<Note>> get() = _deleteLocalNote
+
+    // Local deleted note
+    private val _addDeletedLocalNote = MutableLiveData<UiStates<String>>()
+    val addDeletedLocalNote: LiveData<UiStates<String>> get() = _addDeletedLocalNote
+
+    // Search Variables
+    private val _searchQuery = MutableLiveData<String>()
+    val searchQuery: LiveData<String> get() = _searchQuery
 
 
+    private val _searchResults = MutableLiveData<List<Note>>()
+    val searchResults: LiveData<List<Note>> get() = _searchResults
+// Search Functions
+  fun setSearchQuery(query: String) {
+    _searchQuery.value = query
+    filterNotes(query)
+  }
 
+    private fun filterNotes(query: String) {
+        val allNotes = (_notes.value as? UiStates.Success)?.data ?: emptyList()
+        val filteredList = allNotes.filter { item ->
+            item.title.contains(query, ignoreCase = true) ||
+                    item.message.contains(query, ignoreCase = true) ||
+                    item.date.toString().contains(query, ignoreCase = true)
+        }
+        _searchResults.value = filteredList
+    }
+
+    fun setNotes(notes: List<Note>) {
+        _notes.value = UiStates.Success(notes)
+        filterNotes(_searchQuery.value ?: "")
+    }
+
+//    private fun filterNotes(query: String) {
+//        val allNotes = (_notes.value as? UiStates.Success)?.data ?: emptyList()
+//        val filteredList = allNotes.filter { item ->
+//            item.title.contains(query, ignoreCase = true) ||
+//                    item.message.contains(query, ignoreCase = true) ||
+//                    item.date.toString().contains(query, ignoreCase = true)
+//        }
+//        _searchResults.value = filteredList
+//    }
     //Firebase Data Functions
 
     // Function to get notes from the repository
@@ -97,72 +139,109 @@ class NoteViewModel @Inject constructor(
     // get Local notes
 
     // Function to get local notes
-    fun getLocalNotes() {
+    fun getLocalNotes(user: User) {
         viewModelScope.launch {
-            localRepository.getLocalNotes().collect{ uiState ->
+            repository.getLocalNotes(user).collect{ uiState ->
                 _localNotes.value = uiState
             }
         }
     }
 
     // Function to add local note
-    fun addLocalNote(note: NoteEntity) {
+    fun addLocalNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             _addLocalNote.postValue(UiStates.Loading)
-        localRepository.addLocalNote(note){
-            _addLocalNote.postValue(it)
-               // _addLocalNote.value = it
+            repository.addLocalNote(note){
+                _addLocalNote.postValue(it)
+                // _addLocalNote.value = it
 
             }
         }
     }
 
     // Function to update local note
-    fun updateLocalNote(note: NoteEntity) {
+    fun updateLocalNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
 
-          _updateLocalNote.postValue(UiStates.Loading)
-      localRepository.updateLocalNote(note){
-          _updateLocalNote.postValue(it)
+            _updateLocalNote.postValue(UiStates.Loading)
+            repository.updateLocalNote(note){
+                _updateLocalNote.postValue(it)
 //          _updateLocalNote.value = it
-      }
+            }
         }
     }
 
     // Function to delete local note
-    fun deleteLocalNote(note: NoteEntity) {
+    fun deleteLocalNote(note: Note) {
         viewModelScope.launch {
-          //  _deleteLocalNote.value = UiStates.Loading
-           localRepository.deleteLocalNote(note){
-               _deleteLocalNote.value = it
-           }
+            //  _deleteLocalNote.value = UiStates.Loading
+            _deleteLocalNote.postValue(UiStates.Loading)
+            repository.deleteLocalNote(note){
+                _deleteLocalNote.postValue(it)
+            }
         }
     }
 
-    fun uploadNotes(context: Context, noteList: List<NoteEntity>) {
-        repository.scheduleNotesUpload(context =context,noteList )
+    fun uploadNotes(context: Context) {
+        repository.scheduleNotesUpload(context =context)
+    }
+
+    fun uploadDeletedNotes(context: Context) {
+        repository.scheduleNotesDeleted(context =context)
     }
     private fun isNetworkAvailable(context: Context): Boolean {
         return NetworkUtil.isNetworkAvailable(context = context)
+    }
+    fun deleteNote1(note: Note,context: Context){
+        if (isNetworkAvailable(context)) {
+            deleteNote(note)
+        }
+        else {
+            deleteLocalNote(note)
+        }
+
     }
 
     fun fetchNotes(user: User,context: Context) {
         if (isNetworkAvailable(context)) {
             getNotes(user = user)
-//            _notes.value = UiStates.Loading
-//            repository.getNotes(user) {
-//                _notes.value = it
-            //}
+
+            overrideNotesWithFirebaseData(user)
+
         }
-        else { getLocalNotes()
+        else { getLocalNotes(user)
 //            viewModelScope.launch {
-//                localRepository.getLocalNotes().collect { uiState ->
+//                repository.getLocalNotes().collect { uiState ->
 //                    _localNotes.value = uiState
 //                }
 //            }
         }
     }
+    // Function to override notes with Firebase data
+    fun overrideNotesWithFirebaseData(user: User) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _overrideNotesState.postValue(UiStates.Loading)
+            try {
+                repository.overrideNotesWithFirebaseData(user)
+
+                _overrideNotesState.postValue(UiStates.Success("Notes overridden successfully"))
+                //value =
+            } catch (e: Exception) {
+                _overrideNotesState.postValue(UiStates.Failure(e.message ?: "Unknown error"))
+                    //.value =
+            }
+        }
+    }
+
+    fun addDeletedLocalNote(note: DeletedNote) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _addDeletedLocalNote.postValue(UiStates.Loading)
+            repository.addDeletedLocalNote(note){
+                _addDeletedLocalNote.postValue(it)
+            }
+    }}
 //    fun createNote(){}
+    // fun for deleted note  add into room
 
 
     // ConnectivityManager Functions

@@ -1,4 +1,4 @@
-package com.example.firebase_implementation.View.Di
+package com.example.firebase_implementation.View.di
 
 import UriTypeAdapter
 import android.content.Context
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object appModuel {
+object appModule {
 
 
     @Provides

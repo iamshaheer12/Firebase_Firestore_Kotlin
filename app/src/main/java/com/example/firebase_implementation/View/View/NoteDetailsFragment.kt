@@ -1,7 +1,6 @@
 package com.example.firebase_implementation.View.View
 
-import NoteData
-import com.example.firebase_implementation.View.ViewModel.NoteViewModel
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,9 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.room.TypeConverters
-import com.example.firebase_implementation.View.Local_Data.NoteEntity
 import com.example.firebase_implementation.View.Model.Note
 import com.example.firebase_implementation.View.Model.User
 import com.example.firebase_implementation.View.Utils.NetworkUtil
@@ -21,12 +17,13 @@ import com.example.firebase_implementation.View.Utils.hide
 import com.example.firebase_implementation.View.Utils.show
 import com.example.firebase_implementation.View.Utils.toast
 import com.example.firebase_implementation.View.ViewModel.AuthViewModel
+import com.example.firebase_implementation.View.ViewModel.NoteViewModel
 import com.example.firebase_implementation.databinding.FragmentNoteDetailsBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 @AndroidEntryPoint
 class NoteDetailsFragment : Fragment() {
@@ -34,23 +31,17 @@ class NoteDetailsFragment : Fragment() {
     private lateinit var binding: FragmentNoteDetailsBinding
     private val viewModel: NoteViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
-    private var noteData: NoteData? = null
+    private var noteData: Note? = null
+    val noteId = UUID.randomUUID().toString()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentNoteDetailsBinding.inflate(inflater, container, false)
 
-        noteData = when {
-            arguments?.getParcelable<Note>("note") != null -> {
-                NoteData.NoteType(arguments?.getParcelable("note")!!)
-            }
-            arguments?.getParcelable<NoteEntity>("noteEntity") != null -> {
-                NoteData.NoteEntityType(arguments?.getParcelable("noteEntity")!!)
-            }
-            else -> null
-        }
+        noteData = arguments?.getParcelable("note")
 
         return binding.root
     }
@@ -62,79 +53,59 @@ class NoteDetailsFragment : Fragment() {
         detail()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun detail() {
         when (arguments?.getString("item")) {
             "view" -> {
                 binding.addMessageBtn.hide()
-                when (val data = noteData) {
-                    is NoteData.NoteType -> {
-                        binding.detailTitle.setText(data.note.title)
-                        binding.noteTitle.setText(data.note.title)
-                        binding.date.setText(formatTime(data.note.date))
-                        binding.noteMsg.setText(data.note.message)
-                    }
-                    is NoteData.NoteEntityType -> {
-                        binding.detailTitle.setText(data.noteEntity.title)
-                        binding.noteTitle.setText(data.noteEntity.title)
-                        binding.date.setText(formatTime(TypeConverter.toDate(data.noteEntity.date)))
-                        binding.noteMsg.setText(data.noteEntity.message)
-                    }
-                    null -> {
-                        // Handle null case
-                    }
-
-                    else -> {}
+                noteData?.let { data ->
+                    binding.detailTitle.text = data.title
+                    binding.noteTitle.setText(data.title)
+                    binding.date.text = formatTime(Date(data.date))
+                    binding.noteMsg.setText(data.message)
                 }
             }
             "edit" -> {
-                binding.addMessageBtn.setText("Update")
-                when (val data = noteData) {
-                    is NoteData.NoteType -> {
-                        binding.noteTitle.setText(data.note.title)
-                        binding.date.setText(formatTime(data.note.date))
-                        binding.detailTitle.setText(data.note.title)
-                        binding.noteMsg.setText(data.note.message)
+                binding.addMessageBtn.text = "Update"
+                noteData?.let { data ->
+                    binding.noteTitle.setText(data.title)
+                    binding.date.text = formatTime(Date(data.date))
+                    binding.detailTitle.text = data.title
+                    binding.noteMsg.setText(data.message)
 
-                        binding.addMessageBtn.setOnClickListener {
-                            if (validation()) {
+                    binding.addMessageBtn.setOnClickListener {
+                        if (validation()) {
+                            if (NetworkUtil.isNetworkAvailable(requireContext())) {
                                 viewModel.updateNote(
                                     Note(
-                                        id = data.note.id,
-                                        userId = data.note.userId,
+                                        id = data.id,
+                                        userId = data.userId,
                                         title = binding.noteTitle.text.toString(),
                                         message = binding.noteMsg.text.toString(),
-                                        date = Date()
+                                        date = TypeConverter.fromDate(Date()),
+                                        synced = true
+
                                     )
                                 )
-                            }
-                        }
-                    }
-                    is NoteData.NoteEntityType -> {
-                        binding.noteTitle.setText(data.noteEntity.title)
-                        binding.date.setText(formatTime(TypeConverter.toDate(data.noteEntity.date)))
-                        binding.detailTitle.setText(data.noteEntity.title)
-                        binding.noteMsg.setText(data.noteEntity.message)
-
-                        binding.addMessageBtn.setOnClickListener {
-                            if (validation()) {
+                            } else {
                                 viewModel.updateLocalNote(
-                                    NoteEntity(
-                                        id = data.noteEntity.id,
+                                    Note(
+                                        id = data.id,
+                                        userId = data.userId,
                                         title = binding.noteTitle.text.toString(),
-                                        userId = data.noteEntity.userId,
                                         message = binding.noteMsg.text.toString(),
-                                        date = data.noteEntity.date
+                                        date = TypeConverter.fromDate(Date()),
+                                        synced = false
+
                                     )
                                 )
                             }
                         }
                     }
-
-                    else -> {}
                 }
             }
             else -> {
-                binding.detailTitle.setText("Create Note")
+                binding.detailTitle.text = "Create Note"
                 binding.date.hide()
                 binding.addMessageBtn.setOnClickListener { connectivityCheck() }
             }
@@ -143,14 +114,13 @@ class NoteDetailsFragment : Fragment() {
 
     private fun observers() {
         viewModel.addNote.observe(viewLifecycleOwner) { state ->
-
             handleState(state, "addNote")
-        }
-        viewModel.addLocalNote.observe(viewLifecycleOwner) { state ->
-            handleState(state, "addLocalNote")
         }
         viewModel.updateNote.observe(viewLifecycleOwner) { state ->
             handleState(state, "updateNote")
+        }
+        viewModel.addLocalNote.observe(viewLifecycleOwner) { state ->
+            handleState(state, "addLocalNote")
         }
         viewModel.updateLocalNote.observe(viewLifecycleOwner) { state ->
             handleState(state, "updateLocalNote")
@@ -173,7 +143,16 @@ class NoteDetailsFragment : Fragment() {
     }
 
     private fun validation(): Boolean {
-        return !binding.noteMsg.text.isNullOrEmpty()
+        //!binding.noteMsg.text.isNullOrEmpty()
+        var isValidate = true
+        if (binding.noteMsg.text.isNullOrEmpty() || binding.noteTitle.text.isNullOrEmpty()) {
+            try {
+                isValidate = false
+            } catch (e: Exception) {
+                TODO("Not yet implemented")
+            }
+        }
+        return isValidate
     }
 
     private fun getUser(): User {
@@ -198,29 +177,29 @@ class NoteDetailsFragment : Fragment() {
             if (validation()) {
                 viewModel.addNote(
                     Note(
-                        id = "",
+                        id = noteId,
                         title = binding.noteTitle.text.toString(),
                         userId = getUser().id,
                         message = binding.noteMsg.text.toString(),
-                        date = Date()
+                        date = TypeConverter.fromDate(Date()),
+                        synced = true
+
+
                     )
                 )
             }
         } else {
             if (validation()) {
-            //    lifecycleScope.launch{
-                    viewModel.addLocalNote(
-                        NoteEntity(
-                            id = 0,
-                            title = binding.noteTitle.text.toString(),
-                            userId = getUser().id,
-                            message = binding.noteMsg.text.toString(),
-                            date = TypeConverter.fromDate(Date()) ?: 0L
-                        )
+                viewModel.addLocalNote(
+                    Note(
+                        id = noteId,
+                        title = binding.noteTitle.text.toString(),
+                        userId = getUser().id,
+                        message = binding.noteMsg.text.toString(),
+                        date = TypeConverter.fromDate(Date()),
+                        synced = false
                     )
-
-              //  }
-
+                )
             }
         }
     }
