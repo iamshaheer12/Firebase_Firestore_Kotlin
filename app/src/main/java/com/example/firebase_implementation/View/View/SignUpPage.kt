@@ -29,9 +29,7 @@ class SignUpPage() : Fragment() {
     lateinit var binding: FragmentSignUpPageBinding
     val viewModel: AuthViewModel by viewModels()
 
-//    constructor(parcel: Parcel) : this() {
-//
-//    }
+
 
 
     override fun onCreateView(
@@ -49,11 +47,6 @@ class SignUpPage() : Fragment() {
 
         binding.suSignIn.setOnClickListener {
             findNavController().popBackStack()
-          //  findNavController().navigate(R.id.action_loginPage_to_noteListingFragment)
-//            val navHostFragment =
-//                requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
-//            val navController = navHostFragment.navController
-//            navController.navigate(R.id.action_signUpPage_to_loginPage)
 
         }
         binding.suBtn.setOnClickListener {
@@ -160,22 +153,5 @@ class SignUpPage() : Fragment() {
 
     }
 }
-//    override fun writeToParcel(parcel: Parcel, flags: Int) {
-//
-//    }
-//
-//    override fun describeContents(): Int {
-//        return 0
-//    }
-
-//    companion object CREATOR : Parcelable.Creator<SignUpPage> {
-//        override fun createFromParcel(parcel: Parcel): SignUpPage {
-//            return SignUpPage(parcel)
-//        }
-//
-//        override fun newArray(size: Int): Array<SignUpPage?> {
-//            return arrayOfNulls(size)
-//        }
-//    }
 
 

@@ -26,10 +26,8 @@ class UploadNotesWorker(context: Context, params: WorkerParameters) : CoroutineW
 
         return withContext(Dispatchers.IO) {
             try {
-                // Fetch unsynced notes from local database
                 var unSyncedNotes = noteDao.getUnsyncedNotes(user.id)
 
-                // Check if there are unsynced notes
 //
                 if (unSyncedNotes.isEmpty()) {
                     Log.d("UploadNotesWorker", "No unsynced notes found")
@@ -53,15 +51,7 @@ class UploadNotesWorker(context: Context, params: WorkerParameters) : CoroutineW
                         Result.retry()
                     }.await()
 
-                    // Update the note's sync status
-//                    noteDao.updateNote(Note(
-//                        id = note.id,
-//                        title = note.title,
-//                        message = note.message,
-//                        date = note.date,
-//                        userId = note.userId,
-//                        synced = true
-//                    ))
+
 
                     Log.d("UploadNotesWorker", "Successfully uploaded note ${note.id}")
                 }

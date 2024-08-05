@@ -21,21 +21,4 @@ data class Note(
 ) : Parcelable
 
 
-//{
-//    override fun toString(): String {
-//        return "$id|$message|$userId|$title|${date.time}"
-//    }
-//
-//    companion object {
-//        fun fromString(noteString: String): Note {
-//            val parts = noteString.split("|")
-//            return Note(
-//                id = parts[0],
-//                message = parts[1],
-//                userId = parts[2],
-//                title = parts[3],
-//                date = Date(parts[4].toLong())
-//            )
-//        }
-//    }
-//}
+

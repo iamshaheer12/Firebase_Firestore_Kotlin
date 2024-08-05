@@ -75,23 +75,7 @@ class ProfilePage : Fragment() {
     }
 
     private fun observeViewModel() {
-//        viewModel.updateState.observe(viewLifecycleOwner) { state ->
-//            when (state) {
-//                is UiStates.Failure -> {
-//                    binding.prProgressBar.hide()
-//                    toast(state.error.toString())
-//                    Log.e("ProfilePage", "Error updating profile: ${state.error}")
-//                }
-//                is UiStates.Loading -> {
-//                    binding.prProgressBar.show()
-//                }
-//                is UiStates.Success -> {
-//                    toast("Successfully Uploaded User data to Firestore ")
-//
-//                    binding.prProgressBar.hide()
-//                }
-//            }
-//        }
+
         viewModel.uploadState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStates.Failure -> {

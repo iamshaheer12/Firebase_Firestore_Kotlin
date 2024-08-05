@@ -137,18 +137,6 @@ private  fun LoginUser(){
     }
 
 }
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == RC_SIGN_IN) {
-//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-//            try {
-//                val account = task.getResult(ApiException::class.java)!!
-//                viewModel.signInWithGoogle(account.idToken!!)
-//            } catch (e: ApiException) {
-//                Log.w(TAG, "Google sign in failed", e)
-//            }
-//        }
-//    }
 
     fun googleSigin(){
         viewModel.signInState.observe(viewLifecycleOwner){ state ->
