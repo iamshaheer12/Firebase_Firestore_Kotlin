@@ -5,3 +5,11 @@ object FireStoreTables {
     val USER = "user"
 
 }
+object FireStoreDocumentField {
+    val DATE = "date"
+    val USER_ID = "userId"
+}
+object SharedPref{
+    val localPref = "Local Storage"
+    val userSession = "user_session"
+}

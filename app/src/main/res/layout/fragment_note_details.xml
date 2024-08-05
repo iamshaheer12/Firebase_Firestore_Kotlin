@@ -6,34 +6,124 @@
     android:layout_height="match_parent"
 
     tools:context=".View.View.NoteDetailsFragment">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/detail_app_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/noteMsgLayout"
-        app:layout_goneMarginTop="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar"
+
+
+            android:background="@color/black"
+            android:minHeight="?attr/actionBarSize"
+            >
+            <ImageView
+                android:id="@+id/detail_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_back_ios_24"
+                android:clickable="true"
+                />
+            <TextView
+                android:id="@+id/detail_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/note_detail"
+                android:textSize="17sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:layout_marginStart="20dp"
+                />
+
+
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        android:id="@+id/detail_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="60dp"
-
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toTopOf="parent"
+        android:padding="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/noteMsg"
+        app:layout_constraintTop_toBottomOf="@+id/detail_app_bar">
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Your message"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:padding="12dp"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:maxLines="5"
-         />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/note_title"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="TITLE"
+                android:inputType="textMultiLine"
+                android:maxLines="1"
+                android:padding="12dp"
+                android:background="@null"
+                android:textFontWeight="900"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                style="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <EditText
+                android:id="@+id/noteMsg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="NOTE"
+                android:inputType="textMultiLine"
+                android:maxLines="10"
+                android:background="@null"
+                android:minLines="3"
+                android:padding="16dp"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/note_title" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:text="12Am 2020"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noteMsg" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
 
     <Button
         android:id="@+id/add_message_btn"
@@ -41,7 +131,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="Add Message"
-        app:layout_constraintTop_toBottomOf="@+id/noteMsgLayout"
+        android:backgroundTint="@color/picture5"
+        app:layout_constraintTop_toBottomOf="@+id/detail_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -51,6 +142,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:indeterminateTint="@color/picture5"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@+id/add_message_btn"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.firebase_implementation.R
 import com.example.firebase_implementation.View.Model.User
 import com.example.firebase_implementation.View.Utils.UiStates
@@ -18,19 +19,17 @@ import com.example.firebase_implementation.View.Utils.hide
 import com.example.firebase_implementation.View.Utils.show
 import com.example.firebase_implementation.View.Utils.toast
 import com.example.firebase_implementation.View.ViewModel.AuthViewModel
-import com.example.firebase_implementation.View.ViewModel.NoteViewModel
+//import com.example.firebase_implementation.View.ViewModel.com.example.firebase_implementation.View.ViewModel.NoteViewModel
 import com.example.firebase_implementation.databinding.FragmentNoteDetailsBinding
 import com.example.firebase_implementation.databinding.FragmentSignUpPageBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignUpPage() : Fragment(), Parcelable {
+class SignUpPage() : Fragment() {
     lateinit var binding: FragmentSignUpPageBinding
     val viewModel: AuthViewModel by viewModels()
 
-    constructor(parcel: Parcel) : this() {
 
-    }
 
 
     override fun onCreateView(
@@ -46,14 +45,12 @@ class SignUpPage() : Fragment(), Parcelable {
         super.onViewCreated(view, savedInstanceState)
         createUser()
 
-        binding.suSignIn.setOnClickListener{
-            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.action_signUpPage_to_loginPage)
+        binding.suSignIn.setOnClickListener {
+            findNavController().popBackStack()
 
         }
-        binding.suBtn.setOnClickListener{
-            if (validateSignUp()){
+        binding.suBtn.setOnClickListener {
+            if (validateSignUp()) {
                 viewModel.createUser(
                     email = binding.suUserName.text.toString().trim(),
                     password = binding.suPassword.text.toString().trim(),
@@ -61,9 +58,10 @@ class SignUpPage() : Fragment(), Parcelable {
                         id = "",
                         email = binding.suUserName.text.toString().trim(),
                         password = binding.suPassword.text.toString().trim(),
-                        name = binding.suName.text.toString().trim()
-                    )
+                        name = binding.suName.text.toString().trim(),
+                        imageUrl = ""
 
+                    )
 
 
                 )
@@ -117,21 +115,25 @@ class SignUpPage() : Fragment(), Parcelable {
     }
 
 
-    private fun createUser(){
-        viewModel.create.observe(viewLifecycleOwner){ state ->
-            when(state){
-                is UiStates.Failure ->{
+    private fun createUser() {
+        viewModel.create.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStates.Failure -> {
                     binding.suProgressBar.hide()
                     toast(state.error.toString())
-                    Log.e("error1",state.error.toString())
+                    Log.e("error1", state.error.toString())
                 }
-                is UiStates.Loading ->{
+
+                is UiStates.Loading -> {
                     binding.suProgressBar.show()
                 }
-                is UiStates.Success ->{
-                    val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
+
+                is UiStates.Success -> {
+                    val navHostFragment =
+                        requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
                     val navController = navHostFragment.navController
-                    navController.navigate(R.id.action_signUpPage_to_loginPage
+                    navController.navigate(
+                        R.id.action_signUpPage_to_noteListingFragment
 //                        ,Bundle().apply {
 //                        putString("type","create")
 //                    }
@@ -150,24 +152,6 @@ class SignUpPage() : Fragment(), Parcelable {
         }
 
     }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<SignUpPage> {
-        override fun createFromParcel(parcel: Parcel): SignUpPage {
-            return SignUpPage(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SignUpPage?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-
 }
+
+

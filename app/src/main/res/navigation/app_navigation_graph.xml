@@ -3,45 +3,120 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation_graph"
-    app:startDestination="@id/signUpPage">
+    app:startDestination="@id/loginPage">
 
     <fragment
         android:id="@+id/noteDetailsFragment"
         android:name="com.example.firebase_implementation.View.View.NoteDetailsFragment"
         android:label="fragment_note_details"
         tools:layout="@layout/fragment_note_details" />
+
     <fragment
         android:id="@+id/noteListingFragment"
         android:name="com.example.firebase_implementation.View.View.NoteListingFragment"
         android:label="fragment_note_listing"
         tools:layout="@layout/fragment_note_listing" >
+
         <action
             android:id="@+id/action_noteListingFragment_to_noteDetailsFragment"
-            app:destination="@id/noteDetailsFragment" />
+            app:destination="@id/noteDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_noteListingFragment_to_profilePage"
+            app:destination="@id/profilePage"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
     <fragment
         android:id="@+id/signUpPage"
         android:name="com.example.firebase_implementation.View.View.SignUpPage"
         android:label="SignUpPage"
-        tools:layout="@layout/fragment_sign_up_page"
-        >
+        tools:layout="@layout/fragment_sign_up_page" >
+
         <action
             android:id="@+id/action_signUpPage_to_loginPage"
+            app:destination="@id/loginPage"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_signUpPage_to_noteListingFragment"
+            app:destination="@id/noteListingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_signUpPage_to_noteListingFragment2"
+            app:destination="@id/noteListingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_signUpPage_to_loginPage2"
             app:destination="@id/loginPage" />
     </fragment>
+
     <fragment
         android:id="@+id/loginPage"
         android:name="com.example.firebase_implementation.View.View.LoginPage"
         android:label="fragment_login_page"
         tools:layout="@layout/fragment_login_page" >
 
-
-
         <action
             android:id="@+id/action_loginPage_to_noteListingFragment"
-            app:destination="@id/noteListingFragment" />
+            app:destination="@id/noteListingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
         <action
             android:id="@+id/action_loginPage_to_signUpPage2"
-            app:destination="@id/signUpPage" />
+            app:destination="@id/signUpPage"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_loginPage_to_forgotPassword"
+            app:destination="@id/forgotPassword"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/forgotPassword"
+        android:name="com.example.firebase_implementation.View.View.ForgotPassword"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" />
+
+    <fragment
+        android:id="@+id/profilePage"
+        android:name="com.example.firebase_implementation.View.View.ProfilePage"
+        android:label="fragment_profile_page"
+        tools:layout="@layout/fragment_profile_page" >
+
+        <action
+            android:id="@+id/action_profilePage_to_loginPage"
+            app:destination="@id/loginPage"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 </navigation>

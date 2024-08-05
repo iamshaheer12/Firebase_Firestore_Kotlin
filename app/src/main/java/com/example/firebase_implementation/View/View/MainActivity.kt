@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.SupportActionModeWrapper
 import com.example.firebase_implementation.R
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.internal.view.SupportMenu as SupportMenu1
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -14,20 +16,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        val user:MutableMap<String,Any> = HashMap()
-        user["name"] = "Muhammad Shaheer"
-        user["born"] = 2003
-        user["location"] = "Lahore"
-        FirebaseFirestore.getInstance().collection("users")
-            .add(user)
-            .addOnSuccessListener { documentRefrence ->
-
-                Log.d("TAG", "Document add with id :" + documentRefrence.id)
-            }
-            .addOnFailureListener{
-                e ->
-                Log.w("TAG", "Error adding document" + e)
-            }
-
     }
+
 }
